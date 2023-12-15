@@ -27,23 +27,36 @@ export class DigitOnlyDirective {
 
   @HostListener('keydown', ['$event'])
   onKeyDown(e: KeyboardEvent) {
+    const isControlKey = e.ctrlKey || e.metaKey;
+
     if (
-      this.navigationKeys.indexOf(e.key) > -1 || // Permite: teclas de navegación: retroceso, suprimir, flechas, etc.
-      (e.key === 'a' && e.ctrlKey === true) || // Permite: Ctrl+A
-      (e.key === 'c' && e.ctrlKey === true) || // Permite: Ctrl+C
-      (e.key === 'v' && e.ctrlKey === true) || // Permite: Ctrl+V
-      (e.key === 'x' && e.ctrlKey === true) || // Permite: Ctrl+X
-      (e.key === 'a' && e.metaKey === true) || // Permite: Cmd+A (Mac)
-      (e.key === 'c' && e.metaKey === true) || // Permite: Cmd+C (Mac)
-      (e.key === 'v' && e.metaKey === true) || // Permite: Cmd+V (Mac)
-      (e.key === 'x' && e.metaKey === true) || // Permite: Cmd+X (Mac)
-      (e.key.match(/[a-zA-Z0-9]/)) // Permite: letras y números
+      isControlKey ||
+      e.key === 'Backspace' ||
+      e.key === 'Delete' ||
+      e.key === 'Tab' ||
+      e.key === 'Escape' ||
+      e.key === 'Enter' ||
+      e.key === 'Home' ||
+      e.key === 'End' ||
+      e.key === 'ArrowLeft' ||
+      e.key === 'ArrowRight' ||
+      e.key === 'Clear' ||
+      (e.key.match(/[a-zA-Z0-9]/) && !e.key.match(/\s/))
     ) {
-      // Deja que suceda, no hagas nada
+      // Allow: navigation keys, control keys, and alphanumeric characters without spaces
       return;
     }
-    // Asegura que sea un número y detiene la pulsación de tecla
+
     e.preventDefault();
+  }
+
+
+  @HostListener('input', ['$event'])
+  onInput(e: InputEvent) {
+    const inputValue = (e.target as HTMLInputElement).value;
+    // Remove any spaces or non-alphanumeric characters
+    const sanitizedValue = inputValue.replace(/[^\da-zA-Z]/g, '');
+    (e.target as HTMLInputElement).value = sanitizedValue;
   }
 }
 
