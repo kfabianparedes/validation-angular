@@ -33,7 +33,7 @@ export class ServersComponent implements OnInit {
   }
   onUpdateServerName(event: any) {
     const alphanumericRegex: RegExp = /^[a-zA-Z0-9]+$/;
-    let inputValue = event.target.value;
+    let inputValue = event.target.value.trim();
     if (!alphanumericRegex.test(inputValue)) {
       event.target.value = this.serverName;
       console.log(this.serverName.length);
