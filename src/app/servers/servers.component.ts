@@ -4,26 +4,7 @@ import { Component, Directive, ElementRef, HostListener, Input, OnInit } from '@
   selector: '[numbersAndDigits]'
 })
 export class DigitOnlyDirective {
-  private navigationKeys = [
-    'Backspace',
-    'Delete',
-    'Tab',
-    'Escape',
-    'Enter',
-    'Home',
-    'End',
-    'ArrowLeft',
-    'ArrowRight',
-    'Clear',
-    'Copy',
-    'Paste'
-  ];
-
-  inputElement: HTMLInputElement;
-
-  constructor(public el: ElementRef) {
-    this.inputElement = el.nativeElement;
-  }
+  constructor(public el: ElementRef) {}
 
   @HostListener('keydown', ['$event'])
   onKeyDown(e: KeyboardEvent) {
@@ -50,13 +31,18 @@ export class DigitOnlyDirective {
     e.preventDefault();
   }
 
-
   @HostListener('input', ['$event'])
   onInput(e: InputEvent) {
-    const inputValue = (e.target as HTMLInputElement).value;
-    // Remove any spaces or non-alphanumeric characters
+    const inputElement = e.target as HTMLInputElement;
+    const inputValue = inputElement.value;
+    
+    // Remove spaces and non-alphanumeric characters
     const sanitizedValue = inputValue.replace(/[^\da-zA-Z]/g, '');
-    (e.target as HTMLInputElement).value = sanitizedValue;
+
+    // Update the input value only if it has changed
+    if (inputValue !== sanitizedValue) {
+      inputElement.value = sanitizedValue;
+    }
   }
 }
 
