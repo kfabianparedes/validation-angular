@@ -1,4 +1,52 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
+
+@Directive({
+  selector: '[numbersAndDigits]'
+})
+export class DigitOnlyDirective {
+  private navigationKeys = [
+    'Backspace',
+    'Delete',
+    'Tab',
+    'Escape',
+    'Enter',
+    'Home',
+    'End',
+    'ArrowLeft',
+    'ArrowRight',
+    'Clear',
+    'Copy',
+    'Paste'
+  ];
+
+  inputElement: HTMLInputElement;
+
+  constructor(public el: ElementRef) {
+    this.inputElement = el.nativeElement;
+  }
+
+  @HostListener('keydown', ['$event'])
+  onKeyDown(e: KeyboardEvent) {
+    if (
+      this.navigationKeys.indexOf(e.key) > -1 || // Permite: teclas de navegación: retroceso, suprimir, flechas, etc.
+      (e.key === 'a' && e.ctrlKey === true) || // Permite: Ctrl+A
+      (e.key === 'c' && e.ctrlKey === true) || // Permite: Ctrl+C
+      (e.key === 'v' && e.ctrlKey === true) || // Permite: Ctrl+V
+      (e.key === 'x' && e.ctrlKey === true) || // Permite: Ctrl+X
+      (e.key === 'a' && e.metaKey === true) || // Permite: Cmd+A (Mac)
+      (e.key === 'c' && e.metaKey === true) || // Permite: Cmd+C (Mac)
+      (e.key === 'v' && e.metaKey === true) || // Permite: Cmd+V (Mac)
+      (e.key === 'x' && e.metaKey === true) || // Permite: Cmd+X (Mac)
+      (e.key.match(/[a-zA-Z0-9]/)) // Permite: letras y números
+    ) {
+      // Deja que suceda, no hagas nada
+      return;
+    }
+    // Asegura que sea un número y detiene la pulsación de tecla
+    e.preventDefault();
+  }
+}
+
 
 @Component({
   // selector: '.app-servers',
